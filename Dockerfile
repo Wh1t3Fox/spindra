@@ -16,7 +16,6 @@ RUN pacman -Syy && \
 	pacman -S archstrike-keyring --noconfirm && \
 	pacman -S archstrike-mirrorlist --noconfirm && \
 	sed -i 's|Server = https://mirror.archstrike.org/$arch/$repo|Include = /etc/pacman.d/archstrike-mirrorlist|' /etc/pacman.conf && \
-	echo -e "[archstrike-testing]\nInclude = /etc/pacman.d/archstrike-mirrorlist" >> /etc/pacman.conf && \
 	pacman -Syyu --noconfirm
 
 # Install New User
@@ -31,10 +30,19 @@ RUN echo "_JAVA_AWT_WM_NONREPARENTING=1" >> /etc/profile.d/jre.sh && \
 
 # Install Stuffss
 RUN pacman -S --noconfirm \
+        tmux vim \
         firefox \
-        burpsuite
-            
-
+        burpsuite sqlmap wpscan nikto \
+        radamsa binwalk \
+        archstrike-analysis \
+        archstrike-crypto \
+        archstrike-debugging \
+        archstrike-decompile \
+        archstrike-forensics \
+        archstrike-reverse \
+        archstrike-stego \
+        archstrike-tunnel \
+        archstrike-wordlists
 
 WORKDIR /home/dev
 USER dev
