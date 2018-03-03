@@ -28,23 +28,22 @@ RUN echo "_JAVA_AWT_WM_NONREPARENTING=1" >> /etc/profile.d/jre.sh && \
     chmod 0440 /etc/sudoers.d/dev && \
     chown ${uid}:${gid} -R /home/dev
 
-# Install Stuffss
+# Archstrike Groups
 RUN pacman -S --noconfirm \
-        firefox tmux vim git \
-        python-pip \
-        burpsuite sqlmap wpscan nikto \
-        radamsa binwalk pwntools \
-        archstrike-analysis \
-        archstrike-crypto \
-        archstrike-debugging \
-        archstrike-decompile \
-        archstrike-forensics \
         archstrike-reverse \
         archstrike-stego \
         archstrike-tunnel \
-        archstrike-wordlists && \
-    pip install -U pip && \
-    pip install install capstone pwntools ropgadget && \
+        archstrike-wordlists
+
+# Additional Stuffss
+RUN pacman -Syyu --noconfirm && \
+    pacman -S --noconfirm \
+        firefox tmux vim git \
+        python-pip \
+        burpsuite sqlmap wpscan nikto \
+        radamsa gdb binwalk pwntools \
+        stegsolve && \
+    pip install capstone pwntools ropgadget && \
     git clone https://github.com/tentpegbob/ropgadget.git /opt/ropgadget && \
     echo "source /opt/ropgadget/ROPgadget.py" >> /etc/gdb/gdbinit
 
