@@ -45,7 +45,7 @@ RUN pacman -S --noconfirm \
         archstrike-wordlists && \
     pip install -U pip && \
     pip install install capstone pwntools ropgadget && \
-    git clone https://github.com/tentpegbob/ropgadget.git /opt/ropgadget && /
+    git clone https://github.com/tentpegbob/ropgadget.git /opt/ropgadget && \
     echo "source /opt/ropgadget/ROPgadget.py" >> /etc/gdb/gdbinit
 
 WORKDIR /home/dev
