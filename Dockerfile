@@ -30,10 +30,10 @@ RUN echo "_JAVA_AWT_WM_NONREPARENTING=1" >> /etc/profile.d/jre.sh && \
 
 # Install Stuffss
 RUN pacman -S --noconfirm \
-        tmux vim \
-        firefox \
+        firefox tmux vim git \
+        python-pip \
         burpsuite sqlmap wpscan nikto \
-        radamsa binwalk \
+        radamsa binwalk pwntools \
         archstrike-analysis \
         archstrike-crypto \
         archstrike-debugging \
@@ -42,7 +42,11 @@ RUN pacman -S --noconfirm \
         archstrike-reverse \
         archstrike-stego \
         archstrike-tunnel \
-        archstrike-wordlists
+        archstrike-wordlists && \
+    pip install -U pip && \
+    pip install install capstone pwntools ropgadget && \
+    git clone https://github.com/tentpegbob/ropgadget.git /opt/ropgadget && /
+    echo "source /opt/ropgadget/ROPgadget.py" >> /etc/gdb/gdbinit
 
 WORKDIR /home/dev
 USER dev
