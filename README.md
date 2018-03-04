@@ -4,5 +4,5 @@ spindra
 Docker container for CTFs
 
 ```
-docker run -d -it -e DISPLAY -v $HOME/.Xauthority:/home/dev/.Xauthority --net host spindra
+docker run --rm -it --net host --name spindra -v ~/.Xauthority:/home/dev/.Xauthority -e DISPLAY spindra
 ```
