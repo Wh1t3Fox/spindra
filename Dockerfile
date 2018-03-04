@@ -41,7 +41,7 @@ RUN pacman -Syyu --noconfirm && \
         firefox tmux vim git \
         python-pip \
         burpsuite sqlmap wpscan nikto \
-        radamsa gdb binwalk pwntools \
+        radamsa gdb binwalk pwntools angr \
         stegsolve && \
     pip install capstone pwntools ropgadget && \
     git clone https://github.com/tentpegbob/ropgadget.git /opt/ropgadget && \
