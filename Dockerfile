@@ -42,7 +42,7 @@ RUN pacman -Syyu --noconfirm && \
         python-pip \
         burpsuite sqlmap wpscan nikto \
         radamsa gdb binwalk pwntools angr \
-        stegsolve && \
+        stegsolve nmap unzip && \
     pip install capstone pwntools ropgadget && \
     git clone https://github.com/tentpegbob/ropgadget.git /opt/ropgadget && \
     echo "source /opt/ropgadget/ROPgadget.py" >> /etc/gdb/gdbinit
