@@ -30,10 +30,11 @@ RUN echo "_JAVA_AWT_WM_NONREPARENTING=1" >> /etc/profile.d/jre.sh && \
 
 # Archstrike Groups
 RUN pacman -S --noconfirm \
+        archstrike-mitm \
         archstrike-reverse \
         archstrike-stego \
         archstrike-tunnel \
-        archstrike-wordlists
+        archstrike-wordlists 
 
 # Additional Stuffss
 RUN pacman -Syyu --noconfirm && \
@@ -42,7 +43,9 @@ RUN pacman -Syyu --noconfirm && \
         python-pip \
         burpsuite sqlmap wpscan nikto \
         radamsa gdb binwalk pwntools angr \
-        stegsolve nmap unzip && \
+        stegsolve nmap unzip bettercap \
+        mimikatz mimikittenz-git beef-git \
+        powersploit-git set-git windows-exploit-suggester-git && \
     pip install capstone pwntools ropgadget && \
     git clone https://github.com/tentpegbob/ropgadget.git /opt/ropgadget && \
     echo "source /opt/ropgadget/ROPgadget.py" >> /etc/gdb/gdbinit
