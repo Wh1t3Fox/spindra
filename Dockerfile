@@ -1,7 +1,7 @@
 FROM archlinux/base:latest
 
 # Install ArchStrike
-RUN pacman -Syy && \
+RUN pacman -Syyu --noconfirm && \
 	pacman -S base-devel wget --noconfirm && \
 	sed -i "/\[multilib\]/,/Include/"'s/^#//' /etc/pacman.conf && \
 	echo -e "[archstrike]\nServer = https://mirror.archstrike.org/\$arch/\$repo" >> /etc/pacman.conf && \
