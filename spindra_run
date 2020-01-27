@@ -1,10 +1,13 @@
-spindra
-========
+#!/bin/bash
 
-Docker container for CTFs
+# Verify sudo cache / create it
+sudo -v
 
-```
-docker run -dit --rm \
+# Build
+sudo docker build . -t spindra
+
+# Launch spindra
+sudo docker run -dit --rm \
     --name spindra \
     -e DISPLAY=$DISPLAY \
     -e PULSE_SERVER=unix:/tmp/pulseaudio.socket \
@@ -17,7 +20,7 @@ docker run -dit --rm \
     --device /dev/snd \
     --device /dev/dri \
     --net=container:openvpn \
-    spindra
+    spindra:latest
 
-docker exec -it spindra bash
-```
+# Get in container
+sudo docker exec -it spindra bash
