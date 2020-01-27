@@ -16,7 +16,8 @@ RUN apt-get update && apt-get -y upgrade && \
     libcanberra-gtk* \
     libpulse0 \
     pulseaudio \
-    locales && \
+    locales \
+    locales-all && \
     rm -fr /var/lib/apt/lists/*
 
 # Install New User
