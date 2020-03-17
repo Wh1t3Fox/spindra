@@ -1,5 +1,6 @@
-FROM kalilinux/kali-linux-docker
+FROM kalilinux/kali
 
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get -y upgrade && \
     apt-get install -y \
     kali-linux-default \
@@ -27,6 +28,9 @@ RUN echo "_JAVA_AWT_WM_NONREPARENTING=1" >> /etc/profile.d/jre.sh && \
  useradd -m -G audio,video -s /bin/bash dev && \
  echo "dev ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/dev && \
  chmod 0440 /etc/sudoers.d/dev
+
+COPY ./entrypoint /
+ENTRYPOINT ["/bin/bash", "/entrypoint"]
 
 USER dev
 WORKDIR /home/dev
