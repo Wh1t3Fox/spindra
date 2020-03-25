@@ -3,23 +3,16 @@ FROM kalilinux/kali
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get -y upgrade && \
     apt-get install -y \
-    kali-linux-default \
-    fonts-noto \
-    fonts-noto-cjk \
-    fonts-noto-color-emoji \
-    libexif-dev \
-    libgl1-mesa-dri \
-    libgl1-mesa-glx \
-    libpango1.0-0 \
-    libpulse0 \
-    libasound2 \
-    libasound2-plugins \
-    libcanberra-gtk* \
-    libpulse0 \
-    pulseaudio \
-    locales \
-    locales-all && \
-    rm -fr /var/lib/apt/lists/*
+        kali-linux-default \
+        build-essential \
+        git \
+        python3-dev \
+        python3-pip \
+        net-tools \
+        locales \
+        locales-all && \
+    rm -fr /var/lib/apt/lists/* && \
+    pip3 install siranga
 
 # Install New User
 RUN echo "_JAVA_AWT_WM_NONREPARENTING=1" >> /etc/profile.d/jre.sh && \
@@ -39,5 +32,11 @@ ENV LC_ALL=en_US.UTF-8
 ENV LC_CTYPE=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US.UTF-8
+
+RUN mkdir git && \
+    git clone https://github.com/SecureAuthCorp/impacket.git git/impacket && \
+    pip3 install --user git/impacket/
+
+VOLUME ["/data"]
 
 CMD ["/bin/bash"]
