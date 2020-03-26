@@ -31,7 +31,7 @@ function start_image {
         wh1t3f0x/spindra
 }
 
-if [ "$(docker ps -a --format {{.Names}} --filter 'name=openvpn')" == "openvpn" ]; then
+if [ "$(sudo docker ps -a --format {{.Names}} --filter 'name=openvpn')" == "openvpn" ]; then
     start_image
     exit
 fi
@@ -42,7 +42,7 @@ sudo docker run -dit --rm --cap-add=NET_ADMIN --device /dev/net/tun --name openv
 sleep 30
 
 # Running ?
-if [ "$(docker ps -a --format {{.Names}} --filter 'name=openvpn')" != "openvpn" ]; then
+if [ "$(sudo docker ps -a --format {{.Names}} --filter 'name=openvpn')" != "openvpn" ]; then
     echo -n "Failed to start VPN. Check $OPENVPN_CONFIG, /dev/net/tun, or possible need a reboot."
     echo -n " You can also try adding: \n pull-filter ignore \"ifconfig-ipv6 \"\npull-filter ignore \"route-ipv6 \"\n to your config."
     exit 1
