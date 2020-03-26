@@ -35,7 +35,7 @@ ENV LANGUAGE=en_US.UTF-8
 
 RUN mkdir git && \
     git clone https://github.com/SecureAuthCorp/impacket.git git/impacket && \
-    pip3 install --user git/impacket/
+    sudo pip3 install git/impacket/
 
 VOLUME ["/data"]
 
