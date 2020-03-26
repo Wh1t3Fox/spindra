@@ -6,6 +6,8 @@ function help() {
     echo -e "
 Usage: $0 [-h]
 
+    build                       Build from local Dockerfile
+
 optional arguments:
   -h, --help                    Show this help message and exit
   -v, --vpn                     Path to OVPN Config file
