@@ -1,53 +1,149 @@
 #!/bin/bash
 
-OPENVPN_CONFIG=$1
+IMAGE_NAME="wh1t3f0x/spindra:latest"
 
-if [[ $EUID -eq 0 ]]; then
-    echo -e "I will prompt for sudo. Stop that!"
-    exit
-fi
+function help() {
+    echo -e "
+Usage: $0 [-h]
 
-sudo docker pull wh1t3f0x/spindra
-
-if [ -z $OPENVPN_CONFIG ]; then
-    sudo docker run -dit --rm --name spindra -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ -v $HOME/Downloads/spindra:/data wh1t3f0x/spindra
-    exit
-fi
-
-if ! test -f "$OPENVPN_CONFIG"; then
-    echo -e "$OPENVPN_CONFIG not a file"
-    exit
-fi
-
-# Verify sudo cache / create it
-sudo -v
-
-function start_image {
-
-    sudo docker run -dit --rm \
-        --name spindra \
-        -e DISPLAY=$DISPLAY \
-        -v /tmp/.X11-unix/:/tmp/.X11-unix/ \
-        -v $HOME/Downloads/spindra:/data \
-        --net=container:openvpn \
-        wh1t3f0x/spindra
+optional arguments:
+  -h, --help                    Show this help message and exit
+  -v, --vpn                     Path to OVPN Config file
+  -e, --env                     Path to docker environment file
+"
 }
 
-if [ "$(sudo docker ps -a --format {{.Names}} --filter 'name=openvpn')" == "openvpn" ]; then
-    start_image
-    exit
+function start_image() {
+    RUN_ARGS=$(cat <<EOT
+run -dit --rm \
+-e DISPLAY=$DISPLAY \
+-v /tmp/.X11-unix/:/tmp/.X11-unix/
+EOT
+)
+    if [ ! -z $ENV_FILE ]; then
+        ENV_FILE=$(realpath $ENV_FILE)
+        if ! test -f "$ENV_FILE"; then
+            echo -e "$ENV_FILE not a file"
+            exit
+        fi
+        RUN_ARGS+=" --env-file=$ENV_FILE "
+    fi
+
+    docker pull $IMAGE_NAME 
+
+    if [ ! -z $ENV_FILE ]; then
+        RUN_ARGS+=" --net=container:openvpn "
+    fi
+
+
+    CONTAINER_NAME="spindra"
+    IMAGES=($(docker ps --filter "name=${CONTAINER_NAME}*" --format "{{.Names}}" | sort))
+    if [ "${#IMAGES[@]}" -eq 1 ]; then
+        if [[ ${IMAGES[-1]} = *[0-9] ]]; then
+            CONTAINER_NAME+="_$(($(echo -n ${IMAGES[-1]} | awk -F'_' '{print $NF}')+1))"
+        else
+           CONTAINER_NAME+="_2" 
+        fi
+    elif [ "${#IMAGES[@]}" -ge 2 ]; then
+        CONTAINER_NAME+="_$(($(echo -n ${IMAGES[-1]} | awk -F'_' '{print $NF}')+1))"
+    fi
+
+    RUN_ARGS+=" --name=$CONTAINER_NAME "
+
+    docker $RUN_ARGS $IMAGE_NAME
+}
+
+function start_vpn() {
+    if [ -z $VPN_FILE ]; then
+        start_image
+        exit
+    fi
+
+    OPENVPN_CONFIG=$(realpath $VPN_FILE)
+
+    if ! test -f "$OPENVPN_CONFIG"; then
+        echo -e "$OPENVPN_CONFIG not a file"
+        exit
+    fi
+
+    docker pull -q quay.io/0xcaff/openvpn-client 2>&1 >/dev/null
+    docker run -dit --rm --cap-add=NET_ADMIN --device /dev/net/tun --name openvpn -v $OPENVPN_CONFIG:/vpn/config/config.ovpn quay.io/0xcaff/openvpn-client 2>&1 >/dev/null
+
+    if [ "$(sudo docker ps -a --format {{.Names}} --filter 'name=openvpn')" == "openvpn" ]; then
+        start_image "VPN"
+        exit
+    fi
+    
+    sleep 30
+    
+    # Running ?
+    if [ "$(sudo docker ps -a --format {{.Names}} --filter 'name=openvpn')" != "openvpn" ]; then
+        echo -n "Failed to start VPN. Check $OPENVPN_CONFIG, /dev/net/tun, or possible need a reboot."
+        echo -n " You can also try adding: \n pull-filter ignore \"ifconfig-ipv6 \"\npull-filter ignore \"route-ipv6 \"\n to your config."
+        exit 1
+    fi
+}
+
+function shell() {
+    docker exec -it spindra bash
+}
+
+_main() {
+    
+    ps -ef | grep dockerd | grep -v grep >/dev/null
+    if [[ $? -ne 0 ]]; then
+        echo -e "Docker Not RUNNING!"
+        exit 1
+    fi
+
+    while getopts hv:e:-: OPT; do
+
+        if [ $OPT = "-" ]; then
+            OPT="${OPTARG%%=*}"
+            OPTARG="${OPTARG#$OPT}"
+            OPTARG="${OPTARG#=}"
+        fi
+
+        case "$OPT" in
+            h | help )
+                help "main"
+                exit 0
+                ;;
+            e | env )
+                ENV_FILE="$OPTARG"
+                ;;
+            v | vpn )
+                VPN_FILE="$OPTARG"
+                ;;
+            ??* ) 
+                help
+                exit 1
+                ;;
+            \? )
+                exit 1
+                ;;
+        esac
+    done    
+    shift $((OPTIND -1))
+
+    echo "$subcommand"
+    subcommand=$1; shift
+    case "$subcommand" in
+        build )
+            docker build . -t wh1t3f0x/spindra:latest
+            exit 0
+            ;;
+    esac
+
+    start_vpn
+
+    exit 0
+}
+
+if [ "$EUID" -ne 0 ]; then
+    # preserve our envs
+    sudo -E "$0" "$@"
+else
+    _main "$@"
 fi
 
-sudo docker pull -q quay.io/0xcaff/openvpn-client 2>&1 >/dev/null
-sudo docker run -dit --rm --cap-add=NET_ADMIN --device /dev/net/tun --name openvpn -v $OPENVPN_CONFIG:/vpn/config/config.ovpn quay.io/0xcaff/openvpn-client 2>&1 >/dev/null
-
-sleep 30
-
-# Running ?
-if [ "$(sudo docker ps -a --format {{.Names}} --filter 'name=openvpn')" != "openvpn" ]; then
-    echo -n "Failed to start VPN. Check $OPENVPN_CONFIG, /dev/net/tun, or possible need a reboot."
-    echo -n " You can also try adding: \n pull-filter ignore \"ifconfig-ipv6 \"\npull-filter ignore \"route-ipv6 \"\n to your config."
-    exit 1
-fi
-
-start_image
