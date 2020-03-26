@@ -7,6 +7,8 @@ if [[ $EUID -eq 0 ]]; then
     exit
 fi
 
+sudo docker pull wh1t3f0x/spindra
+
 if [ -z $OPENVPN_CONFIG ]; then
     sudo docker run -dit --rm --name spindra -e DISPLAY=$DISPLAY -v /tmp/.X11-unix/:/tmp/.X11-unix/ -v $HOME/Downloads/spindra:/data wh1t3f0x/spindra
     exit
