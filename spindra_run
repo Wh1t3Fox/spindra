@@ -11,7 +11,7 @@ Usage: $0 [-h]
 optional arguments:
   -h, --help                    Show this help message and exit
   -v, --vpn                     Path to OVPN Config file
-  -e, --env                     Path to docker environment file
+  -o, --opt                     Additional docker options
 "
 }
 
@@ -19,21 +19,21 @@ function start_image() {
     RUN_ARGS=$(cat <<EOT
 run -dit --rm \
 -e DISPLAY=$DISPLAY \
--v /tmp/.X11-unix/:/tmp/.X11-unix/
+-v /tmp/.X11-unix/:/tmp/.X11-unix/ 
 EOT
 )
-    if [ ! -z $ENV_FILE ]; then
-        ENV_FILE=$(realpath $ENV_FILE)
-        if ! test -f "$ENV_FILE"; then
-            echo -e "$ENV_FILE not a file"
+    if [ ! -z $OPT_FILE ]; then
+        OPT_FILE=$(realpath $OPT_FILE)
+        if ! test -f "$OPT_FILE"; then
+            echo -e "$OPT_FILE not a file"
             exit
         fi
-        RUN_ARGS+=" --env-file=$ENV_FILE "
+        RUN_ARGS+="$(cat $OPT_FILE)"
     fi
 
     docker pull $IMAGE_NAME 
 
-    if [ ! -z $ENV_FILE ]; then
+    if [ ! -z $VPN_FILE ]; then
         RUN_ARGS+=" --net=container:openvpn "
     fi
 
@@ -98,7 +98,7 @@ _main() {
         exit 1
     fi
 
-    while getopts hv:e:-: OPT; do
+    while getopts hv:o:-: OPT; do
 
         if [ $OPT = "-" ]; then
             OPT="${OPTARG%%=*}"
@@ -111,8 +111,8 @@ _main() {
                 help "main"
                 exit 0
                 ;;
-            e | env )
-                ENV_FILE="$OPTARG"
+            o | opt )
+                OPT_FILE="$OPTARG"
                 ;;
             v | vpn )
                 VPN_FILE="$OPTARG"
