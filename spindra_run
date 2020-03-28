@@ -71,7 +71,7 @@ function start_vpn() {
     docker pull -q quay.io/0xcaff/openvpn-client 2>&1 >/dev/null
     docker run -dit --rm --cap-add=NET_ADMIN --device /dev/net/tun --name openvpn -v $OPENVPN_CONFIG:/vpn/config/config.ovpn quay.io/0xcaff/openvpn-client 2>&1 >/dev/null
 
-    if [ "$(sudo docker ps -a --format {{.Names}} --filter 'name=openvpn')" == "openvpn" ]; then
+    if [ "$(docker ps -a --format {{.Names}} --filter 'name=openvpn')" == "openvpn" ]; then
         start_image "VPN"
         exit
     fi
@@ -79,7 +79,7 @@ function start_vpn() {
     sleep 30
     
     # Running ?
-    if [ "$(sudo docker ps -a --format {{.Names}} --filter 'name=openvpn')" != "openvpn" ]; then
+    if [ "$(docker ps -a --format {{.Names}} --filter 'name=openvpn')" != "openvpn" ]; then
         echo -n "Failed to start VPN. Check $OPENVPN_CONFIG, /dev/net/tun, or possible need a reboot."
         echo -n " You can also try adding: \n pull-filter ignore \"ifconfig-ipv6 \"\npull-filter ignore \"route-ipv6 \"\n to your config."
         exit 1
