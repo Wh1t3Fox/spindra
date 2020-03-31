@@ -68,14 +68,14 @@ function start_vpn() {
         exit
     fi
 
-    docker pull quay.io/0xcaff/openvpn-client 2>&1 >/dev/null
-    docker run -dit --rm --cap-add=NET_ADMIN --device /dev/net/tun --name openvpn -v $OPENVPN_CONFIG:/vpn/config/config.ovpn quay.io/0xcaff/openvpn-client 2>&1 >/dev/null
-
     if [ "$(docker ps -a --format {{.Names}} --filter 'name=openvpn')" == "openvpn" ]; then
         start_image "VPN"
         exit
     fi
     
+    docker pull quay.io/0xcaff/openvpn-client 2>&1 >/dev/null
+    docker run -dit --rm --cap-add=NET_ADMIN --device /dev/net/tun --name openvpn -v $OPENVPN_CONFIG:/vpn/config/config.ovpn quay.io/0xcaff/openvpn-client 2>&1 >/dev/null
+
     sleep 30
     
     # Running ?
