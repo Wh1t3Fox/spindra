@@ -32,8 +32,6 @@ EOT
         RUN_ARGS+="$(cat $OPT_FILE)"
     fi
 
-    docker pull $IMAGE_NAME 2>&1 >/dev/null
-
     if [ ! -z $VPN_FILE ]; then
         RUN_ARGS+=" --net=container:openvpn "
     fi
