@@ -41,7 +41,7 @@ EOT
 
 
     CONTAINER_NAME="spindra"
-    IMAGES=($(docker ps -a --filter "name=${CONTAINER_NAME}*" --format "{{.Names}}" | sort))
+    IMAGES=($(sudo docker ps -a --filter "name=${CONTAINER_NAME}*" --format "{{.Names}}" | sort))
     if [ "${#IMAGES[@]}" -eq 1 ]; then
         if [[ ${IMAGES[-1]} = *[0-9] ]]; then
             CONTAINER_NAME+="_$(($(echo -n ${IMAGES[-1]} | awk -F'_' '{print $NF}')+1))"
@@ -54,9 +54,9 @@ EOT
 
     RUN_ARGS+=" --name=$CONTAINER_NAME "
 
-    docker $RUN_ARGS $IMAGE_NAME
-
-    docker exec -it $CONTAINER_NAME bash
+    sudo docker pull $IMAGE_NAME
+    sudo docker $RUN_ARGS $IMAGE_NAME
+    sudo docker exec -it $CONTAINER_NAME bash
 }
 
 function start_vpn() {
@@ -72,29 +72,25 @@ function start_vpn() {
         exit
     fi
 
-    if [ "$(docker ps -a --format {{.Names}} --filter 'name=openvpn')" == "openvpn" ]; then
+    if [ "$(sudo docker ps -a --format {{.Names}} --filter 'name=openvpn')" == "openvpn" ]; then
         start_image
         exit
     fi
     
-    docker pull quay.io/0xcaff/openvpn-client 2>&1 >/dev/null
-    docker run -dit --rm --cap-add=NET_ADMIN --device /dev/net/tun --name openvpn -v $OPENVPN_CONFIG:/vpn/config/config.ovpn quay.io/0xcaff/openvpn-client 2>&1 >/dev/null
+    sudo docker pull quay.io/0xcaff/openvpn-client 2>&1 >/dev/null
+    sudo docker run -dit --rm --cap-add=NET_ADMIN --device /dev/net/tun --name openvpn -v $OPENVPN_CONFIG:/vpn/config/config.ovpn quay.io/0xcaff/openvpn-client 2>&1 >/dev/null
 
     echo -e "Waiting for VPN..."
     sleep 30
     
     # Running ?
-    if [ "$(docker ps -a --format {{.Names}} --filter 'name=openvpn')" != "openvpn" ]; then
+    if [ "$(sudo docker ps -a --format {{.Names}} --filter 'name=openvpn')" != "openvpn" ]; then
         echo -n "Failed to start VPN. Check $OPENVPN_CONFIG, /dev/net/tun, or possible need a reboot."
         echo -n " You can also try adding: \n pull-filter ignore \"ifconfig-ipv6 \"\npull-filter ignore \"route-ipv6 \"\n to your config."
         exit 1
     fi
 
     start_image
-}
-
-function shell() {
-    docker exec -it spindra bash
 }
 
 _main() {
@@ -150,9 +146,10 @@ _main() {
 }
 
 if [ "$EUID" -ne 0 ]; then
-    # preserve our envs
-    sudo -E "$0" "$@"
-else
+    sudo -v
     _main "$@"
+else
+    echo -e "Do not run as root!"
+    exit 1
 fi
 
