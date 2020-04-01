@@ -30,6 +30,9 @@ EOT
             exit
         fi
         RUN_ARGS+=$(envsubst < $OPT_FILE)
+
+    elif test -f  "$PWD/opt"; then
+        RUN_ARGS+=$(envsubst < "$PWD/opt")
     fi
 
     if [ ! -z $VPN_FILE ]; then
