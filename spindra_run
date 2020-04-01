@@ -18,6 +18,7 @@ optional arguments:
 function start_image() {
     RUN_ARGS=$(cat <<EOT
 run -dit --rm \
+--cap-add=NET_ADMIN \
 -e DISPLAY=$DISPLAY \
 -v /tmp/.X11-unix/:/tmp/.X11-unix/ 
 EOT
