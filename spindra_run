@@ -51,10 +51,19 @@ EOT
         CONTAINER_NAME+="_$(($(echo -n ${IMAGES[-1]} | awk -F'_' '{print $NF}')+1))"
     fi
 
+    # Launch Burp?
+    if [ ! -z $BURPSUITE ]; then
+        local BURP_IMAGE="wh1t3f0x/burpsuite:latest"
+        sudo docker pull $BURP_IMAGE
+        sudo docker $RUN_ARGS $BURP_IMAGE
+    fi
+
     RUN_ARGS+=" --name=$CONTAINER_NAME "
 
     sudo docker pull $IMAGE_NAME
     sudo docker $RUN_ARGS $IMAGE_NAME
+
+    # Drop into container
     sudo docker exec -it $CONTAINER_NAME bash
 }
 
@@ -100,7 +109,7 @@ _main() {
         exit 1
     fi
 
-    while getopts hv:o:-: OPT; do
+    while getopts bhv:o:-: OPT; do
 
         if [ $OPT = "-" ]; then
             OPT="${OPTARG%%=*}"
@@ -112,6 +121,9 @@ _main() {
             h | help )
                 help "main"
                 exit 0
+                ;;
+            b | burp )
+                BURPSUITE=1
                 ;;
             o | opt )
                 OPT_FILE="$OPTARG"
