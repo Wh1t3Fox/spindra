@@ -12,6 +12,7 @@ optional arguments:
   -h, --help                    Show this help message and exit
   -v, --vpn                     Path to OVPN Config file
   -o, --opt                     Additional docker options
+  -b, --burp                    Launch BurpSuite with spindra
 "
 }
 
