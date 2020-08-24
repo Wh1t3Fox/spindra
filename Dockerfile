@@ -15,10 +15,17 @@ RUN pacman -Syy reflector pacman-contrib --noconfirm && \
         afl-utils \
         base-devel \
         binwalk \
+        chisel \
         curl \
+        dirbuster \
+        empire \
+        enum4linux \
         fzf \
         git \
+        gobuster \
         iproute2 \
+        iputils \
+        jd-gui \
         man \
         man-pages \
         netcat \
@@ -31,6 +38,7 @@ RUN pacman -Syy reflector pacman-contrib --noconfirm && \
         r2ghidra-dec \
         screen \
         smbclient \
+        sqlmap \
         sudo \
         thefuck \
         tmux \
