@@ -78,8 +78,10 @@ RUN cd /tmp && \
     cd yay && makepkg -sri --noconfirm && \
     cd - && rm -fr /tmp/yay && \
     paccache --remove --keep 0 && \
-    # zshrc
-    curl -SL -o /home/dev/.zshrc https://raw.githubusercontent.com/Wh1t3Fox/dotfiles/master/.zshrc
+    # don't need all the dots
+    curl -SL -o /home/dev/.zshrc https://raw.githubusercontent.com/Wh1t3Fox/dotfiles/master/.zshrc && \
+    curl -SL -o /home/dev/.vimrc https://raw.githubusercontent.com/Wh1t3Fox/dotfiles/master/.vimrc && \
+    curl -SL -o /home/dev/.tmux.conf https://raw.githubusercontent.com/Wh1t3Fox/dotfiles/master/.tmux.conf
 
 VOLUME ["/data"]
 
