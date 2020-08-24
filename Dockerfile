@@ -1,10 +1,8 @@
-FROM archlinux
+FROM archstrike/archstrike
 
 RUN pacman -Syy reflector pacman-contrib --noconfirm && \
     reflector -l 200 -f 10 --sort rate -c 'United States' --save /etc/pacman.d/mirrorlist && \
     paccache --remove --keep 0 && \
-    # multiarch
-    echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf && \
     # allow manpages
     sed -i '/NoExtract  = usr\/share\/man\//d' /etc/pacman.conf && \
     # update locale
@@ -24,6 +22,7 @@ RUN pacman -Syy reflector pacman-contrib --noconfirm && \
         man \
         man-pages \
         netcat \
+        nmap \
         patchelf \
         p7zip \
         python \
@@ -31,6 +30,7 @@ RUN pacman -Syy reflector pacman-contrib --noconfirm && \
         radare2 \
         r2ghidra-dec \
         screen \
+        smbclient \
         sudo \
         thefuck \
         tmux \
@@ -70,9 +70,6 @@ RUN cd /tmp && \
     cd yay && makepkg -sri --noconfirm && \
     cd - && rm -fr /tmp/yay && \
     paccache --remove --keep 0 && \
-    # antigen
-    mkdir -p /home/dev/.config/ && \
-    curl -SL -o /home/dev/.config/antigen.zsh https://git.io/antigen && \
     # zshrc
     curl -SL -o /home/dev/.zshrc https://raw.githubusercontent.com/Wh1t3Fox/dotfiles/master/.zshrc
 
