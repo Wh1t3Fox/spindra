@@ -65,7 +65,7 @@ EOT
     sudo docker $RUN_ARGS $IMAGE_NAME
 
     # Drop into container
-    sudo docker exec -it $CONTAINER_NAME
+    sudo docker exec -it $CONTAINER_NAME zsh
 }
 
 function start_vpn() {
