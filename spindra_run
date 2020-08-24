@@ -65,7 +65,7 @@ EOT
     sudo docker $RUN_ARGS $IMAGE_NAME
 
     # Drop into container
-    sudo docker exec -it $CONTAINER_NAME bash
+    sudo docker exec -it $CONTAINER_NAME
 }
 
 function start_vpn() {
