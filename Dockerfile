@@ -28,6 +28,8 @@ RUN pacman -Syy reflector pacman-contrib --noconfirm && \
         jd-gui \
         man \
         man-pages \
+        metasploit-framework \
+        nasm \
         netcat \
         nmap \
         patchelf \
