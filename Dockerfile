@@ -28,6 +28,7 @@ RUN pacman -Syyu reflector pacman-contrib --noconfirm && \
         iproute2 \
         iputils \
         jd-gui \
+        jq \
         man \
         man-pages \
         metasploit-framework \
