@@ -1,6 +1,6 @@
 FROM archstrike/archstrike
 
-RUN pacman -Syy reflector pacman-contrib --noconfirm && \
+RUN pacman -Syyu reflector pacman-contrib --noconfirm && \
     reflector -l 200 -f 10 --sort rate -c 'United States' --save /etc/pacman.d/mirrorlist && \
     paccache --remove --keep 0 && \
     # allow manpages
@@ -9,7 +9,7 @@ RUN pacman -Syy reflector pacman-contrib --noconfirm && \
     echo 'LANG=en_US.UTF-8' > /etc/locale.conf && \
     locale-gen en_US.UTF-8 && \
     # install pkgs
-    pacman -Syyu --noconfirm && \
+    pacman -Syy && \
     pacman -S \
         afl \
         afl-utils \
@@ -18,6 +18,7 @@ RUN pacman -Syy reflector pacman-contrib --noconfirm && \
         chisel \
         curl \
         dirbuster \
+        doctl \
         empire \
         enum4linux \
         fzf \
@@ -33,6 +34,7 @@ RUN pacman -Syy reflector pacman-contrib --noconfirm && \
         nasm \
         netcat \
         nmap \
+        packer \
         patchelf \
         p7zip \
         python \
@@ -62,7 +64,7 @@ RUN pacman -Syy reflector pacman-contrib --noconfirm && \
     paccache --remove --keep 0 && \
     # pip pkgs
     python -m pip install -U \
-        impacket
+        impacket \
         siranga && \
     # create new user
     useradd -m -G audio,video -s /usr/bin/zsh dev && \
