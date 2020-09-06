@@ -23,6 +23,7 @@ RUN pacman -Syy reflector pacman-contrib --noconfirm && \
         fzf \
         git \
         gobuster \
+        hydra \
         iproute2 \
         iputils \
         jd-gui \
@@ -36,6 +37,7 @@ RUN pacman -Syy reflector pacman-contrib --noconfirm && \
         p7zip \
         python \
         python-pip \
+        python-virtualenv \
         radare2 \
         r2ghidra-dec \
         screen \
@@ -60,6 +62,7 @@ RUN pacman -Syy reflector pacman-contrib --noconfirm && \
     paccache --remove --keep 0 && \
     # pip pkgs
     python -m pip install -U \
+        impacket
         siranga && \
     # create new user
     useradd -m -G audio,video -s /usr/bin/zsh dev && \
@@ -80,6 +83,8 @@ RUN cd /tmp && \
     cd yay && makepkg -sri --noconfirm && \
     cd - && rm -fr /tmp/yay && \
     paccache --remove --keep 0 && \
+    cd /home/dev && \
+    curl -SLO http://downloads.skullsecurity.org/passwords/rockyou.txt.bz2 && \
     # don't need all the dots
     curl -SL -o /home/dev/.zshrc https://raw.githubusercontent.com/Wh1t3Fox/dotfiles/master/.zshrc && \
     curl -SL -o /home/dev/.vimrc https://raw.githubusercontent.com/Wh1t3Fox/dotfiles/master/.vimrc && \
