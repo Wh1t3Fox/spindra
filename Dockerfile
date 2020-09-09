@@ -70,7 +70,7 @@ RUN pacman -Syyu reflector pacman-contrib --noconfirm && \
     # create new user
     useradd -m -G audio,video -s /usr/bin/zsh dev && \
     echo "dev ALL=(ALL) NOPASSWD: ALL" | tee -a /etc/sudoers
-    
+ 
 USER dev
 WORKDIR /home/dev
 
@@ -84,22 +84,22 @@ RUN cd /tmp && \
     # Install yay
     git clone https://aur.archlinux.org/yay.git && \
     cd yay && makepkg -sri --noconfirm && \
-    cd - && rm -fr /tmp/yay && \
+    cd /home/dev && rm -fr /tmp/yay && \
     paccache --remove --keep 0 && \
-    cd /home/dev && \
-    # don't need all the dots
     curl -SL -o .zshrc https://raw.githubusercontent.com/Wh1t3Fox/dotfiles/master/.zshrc && \
     curl -SL -o .vimrc https://raw.githubusercontent.com/Wh1t3Fox/dotfiles/master/.vimrc && \
     curl -SL -o .tmux.conf https://raw.githubusercontent.com/Wh1t3Fox/dotfiles/master/.tmux.conf && \
     # wordlists
     mkdir -p /home/dev/wordlists && cd /home/dev/wordlists && \
     curl -SLO http://downloads.skullsecurity.org/passwords/rockyou.txt.bz2 && \
-    # tools!
+    # Powershell
     yay -S \
         powershell-bin \
     --noconfirm && \
-    mkdir -p /home/dev/tools && cd /home/dev/tools && \
-    git clone https://github.com/danielbohannon/Invoke-Obfuscation.git
+    sudo ln -s /usr/sbin/pwsh /usr/sbin/powershell && \
+    # Powershell Modules
+    sudo mkdir -p /usr/local/share/powershell/Modules && \
+    sudo git clone https://github.com/danielbohannon/Invoke-Obfuscation.git /usr/local/share/powershell/Modules/Invoke-Obfuscation
 
 VOLUME ["/data"]
 
