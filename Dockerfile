@@ -87,11 +87,19 @@ RUN cd /tmp && \
     cd - && rm -fr /tmp/yay && \
     paccache --remove --keep 0 && \
     cd /home/dev && \
-    curl -SLO http://downloads.skullsecurity.org/passwords/rockyou.txt.bz2 && \
     # don't need all the dots
-    curl -SL -o /home/dev/.zshrc https://raw.githubusercontent.com/Wh1t3Fox/dotfiles/master/.zshrc && \
-    curl -SL -o /home/dev/.vimrc https://raw.githubusercontent.com/Wh1t3Fox/dotfiles/master/.vimrc && \
-    curl -SL -o /home/dev/.tmux.conf https://raw.githubusercontent.com/Wh1t3Fox/dotfiles/master/.tmux.conf
+    curl -SL -o .zshrc https://raw.githubusercontent.com/Wh1t3Fox/dotfiles/master/.zshrc && \
+    curl -SL -o .vimrc https://raw.githubusercontent.com/Wh1t3Fox/dotfiles/master/.vimrc && \
+    curl -SL -o .tmux.conf https://raw.githubusercontent.com/Wh1t3Fox/dotfiles/master/.tmux.conf && \
+    # wordlists
+    mkdir -p /home/dev/wordlists && cd /home/dev/wordlists && \
+    curl -SLO http://downloads.skullsecurity.org/passwords/rockyou.txt.bz2 && \
+    # tools!
+    yay -S \
+        powershell-bin \
+    --noconfirm && \
+    mkdir -p /home/dev/tools && cd /home/dev/tools && \
+    git clone https://github.com/danielbohannon/Invoke-Obfuscation.git
 
 VOLUME ["/data"]
 
