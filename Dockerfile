@@ -35,6 +35,7 @@ RUN pacman -Syyu reflector pacman-contrib --noconfirm && \
         nasm \
         netcat \
         nmap \
+        openssh \
         packer \
         patchelf \
         p7zip \
