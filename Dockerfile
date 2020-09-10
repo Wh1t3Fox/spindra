@@ -66,6 +66,7 @@ RUN pacman -Syyu reflector pacman-contrib --noconfirm && \
     paccache --remove --keep 0 && \
     # pip pkgs
     python -m pip install -U \
+        hashcrack-jtr \
         impacket \
         siranga && \
     # create new user
