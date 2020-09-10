@@ -42,6 +42,7 @@ RUN pacman -Syyu reflector pacman-contrib --noconfirm && \
         python-pip \
         python-virtualenv \
         radare2 \
+        responder \
         r2ghidra-dec \
         screen \
         smbclient \
