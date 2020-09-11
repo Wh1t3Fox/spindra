@@ -10,10 +10,10 @@ help:
 .DEFAULT_GOAL := help
 
 build: ## Build the container
-	@docker build -t $(APP_NAME) .
+	@docker build -t $(DOCKER_REPO)/$(APP_NAME) .
 
 build-nc: ## Build the container without cache
-	@docker build --no-cache -t $(APP_NAME) .
+	@docker build --no-cache -t $(DOCKER_REPO)/$(APP_NAME) .
 
 publish: # Publish the latest version
 	@docker push $(DOCKER_REPO)/$(APP_NAME):$(VERSION)
