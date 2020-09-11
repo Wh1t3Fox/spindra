@@ -102,7 +102,8 @@ RUN cd /tmp && \
     sudo ln -s /usr/sbin/pwsh /usr/sbin/powershell && \
     # Powershell Modules
     sudo mkdir -p /usr/local/share/powershell/Modules && \
-    sudo git clone https://github.com/danielbohannon/Invoke-Obfuscation.git /usr/local/share/powershell/Modules/Invoke-Obfuscation
+    sudo git clone https://github.com/danielbohannon/Invoke-Obfuscation.git /usr/local/share/powershell/Modules/Invoke-Obfuscation && \
+    sudo git clone https://github.com/Wh1t3Fox/xencrypt.git /usr/local/share/powershell/Modules/Xencrypt
 
 VOLUME ["/data"]
 
